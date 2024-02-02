@@ -58,7 +58,7 @@ class test_basemodel(unittest.TestCase):
 
     def test_str(self):
         """ """
-        i = self.value()
+        i = self.value(None)
         self.assertEqual(str(i), '[{}] ({}) {}'.format(self.name, i.id,
                          i.__dict__))
 
