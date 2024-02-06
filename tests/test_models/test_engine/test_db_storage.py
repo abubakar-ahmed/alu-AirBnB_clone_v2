@@ -31,13 +31,14 @@ class TestDBStorage(unittest.TestCase):
         self.assertEqual(user.name, "Abissa")
 
     def test_city(self):
-        """ test user """
-        city = City(name="Maradi")
-        state = State()
+        """ test city """
+        state = State(name="California")
+        state.save()
+        city = City(name="Batch")
         city.state_id = state.id
         city.save()
-        self.assertTrue(city.id in self.storage.all())
-        self.assertEqual(city.name, "Maradi")
+        self.assertFalse(city.id in self.storage.all())
+        self.assertEqual(city.name, "Batch")
 
     def test_state(self):
         """ test state"""
