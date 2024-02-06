@@ -52,7 +52,7 @@ class TestDBStorage(unittest.TestCase):
         state = State(name="California")
         state.save()
 
-        city = City(name="Batch")
+        city = City(name="Fremont")
         city.state_id = state.id
         city.save()
 
