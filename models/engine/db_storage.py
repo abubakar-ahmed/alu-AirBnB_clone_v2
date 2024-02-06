@@ -29,27 +29,23 @@ class DBStorage:
                                       .format(user, passwd, host, db),
                                       pool_pre_ping=True)
 
-        if env == "test":
-            Base.metadata.drop_all(self.__engine)
+        if os.getenv('HBNB_ENV') == 'test':
+            Base.metadata.drop_all(self._engine)
 
     def all(self, cls=None):
-        """returns a dictionary  of __object"""
-        dic = {}
-        if cls:
-            if isinstance(cls, str):
-                cls = eval(cls)
-            query = self.__session.query(cls)
-            for elem in query:
-                key = "{}.{}".format(type(elem).__name__, elem.id)
-                dic[key] = elem
+        """Returns a dictionary of all objects"""
+        classes = [User, State, City, Place, Amenity, Review]
+        new_dict = {}
+        if cls is None:
+            for c in classes:
+                for obj in self._session.query(c).all():
+                    key = obj.__class__.__name__ + '.' + obj.id
+                    new_dict[key] = obj
         else:
-            lista = [State, City, User, Place, Review, Amenity]
-            for clase in lista:
-                query = self.__session.query(clase)
-                for elem in query:
-                    key = "{}.{}".format(type(elem).__name__, elem.id)
-                    dic[key] = elem
-        return (dic)
+            for obj in self._session.query(cls).all():
+                key = obj.__class__.__name__ + '.' + obj.id
+                new_dict[key] = obj
+        return new_dict
 
     def new(self, obj):
         """add a new element in the table
