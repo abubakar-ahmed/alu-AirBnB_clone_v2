@@ -33,10 +33,7 @@ class DBStorage:
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
-        """returns a dictionary
-        Return:
-            returns a dictionary of __object
-        """
+        """returns a dictionary  of __object"""
         dic = {}
         if cls:
             if isinstance(cls, str):
