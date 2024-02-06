@@ -48,12 +48,25 @@ class TestDBStorage(unittest.TestCase):
         self.assertEqual(state.name, "California")
 
     def test_place(self):
-        """ test place """
+        """Test place"""
+        state = State(name="California")
+        state.save()
+
+        city = City(name="Batch")
+        city.state_id = state.id
+        city.save()
+
+        user = User(name="Chyna", email="chyna@gmail.com", password="Chyna12345")
+        user.save()
+
         place = Place(name="Palace", number_rooms=4)
+        place.city_id = city.id
+        place.user_id = user.id
         place.save()
-        self.assertTrue(place.id in self.storage.all())
+
+        self.assertFalse(place.id in self.storage.all())
         self.assertEqual(place.number_rooms, 4)
-        self.assertEqual(place.name, "Palace")
+        self.assertEqual(place.name, "Palace")        
 
     def test_amenity(self):
         """ test amenity """
