@@ -25,32 +25,34 @@ class DBStorage:
         host = getenv("HBNB_MYSQL_HOST")
         env = getenv("HBNB_ENV")
 
-    def __init__(self):
-        """Initialize the DBStorage class"""
-        self._engine = create_engine('mysql+mysqldb://{}:{}@{}:3306/{}'
-                                     .format(os.getenv('HBNB_MYSQL_USER'),
-                                             os.getenv('HBNB_MYSQL_PWD'),
-                                             os.getenv('HBNB_MYSQL_HOST'),
-                                             os.getenv('HBNB_MYSQL_DB')),
-                                     pool_pre_ping=True)
+        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'
+                                      .format(user, passwd, host, db),
+                                      pool_pre_ping=True)
 
-        if os.getenv('HBNB_ENV') == 'test':
-            Base.metadata.drop_all(self._engine)
+        if env == "test":
+            Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
-        """Returns a dictionary of all objects"""
-        classes = [User, State, City, Place, Amenity, Review]
-        new_dict = {}
-        if cls is None:
-            for c in classes:
-                for obj in self._session.query(c).all():
-                    key = obj.__class__.__name__ + '.' + obj.id
-                    new_dict[key] = obj
+        """returns a dictionary
+        Return:
+            returns a dictionary of __object
+        """
+        dic = {}
+        if cls:
+            if isinstance(cls, str):
+                cls = eval(cls)
+            query = self.__session.query(cls)
+            for elem in query:
+                key = "{}.{}".format(type(elem).__name__, elem.id)
+                dic[key] = elem
         else:
-            for obj in self._session.query(cls).all():
-                key = obj.__class__.__name__ + '.' + obj.id
-                new_dict[key] = obj
-        return new_dict
+            lista = [State, City, User, Place, Review, Amenity]
+            for clase in lista:
+                query = self.__session.query(clase)
+                for elem in query:
+                    key = "{}.{}".format(type(elem).__name__, elem.id)
+                    dic[key] = elem
+        return (dic)
 
     def new(self, obj):
         """add a new element in the table
